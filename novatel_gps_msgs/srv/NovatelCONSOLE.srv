@@ -1,0 +1,10 @@
+# Request to send a message (novatel console)
+#Request
+
+string message
+
+---
+
+#Response
+bool success
+

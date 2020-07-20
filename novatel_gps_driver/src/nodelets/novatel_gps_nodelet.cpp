@@ -144,6 +144,7 @@
 #include <nodelet/nodelet.h>
 #include <novatel_gps_msgs/NovatelCorrectedImuData.h>
 #include <novatel_gps_msgs/NovatelFRESET.h>
+#include <novatel_gps_msgs/NovatelCONSOLE.h>
 #include <novatel_gps_msgs/NovatelMessageHeader.h>
 #include <novatel_gps_msgs/NovatelPosition.h>
 #include <novatel_gps_msgs/NovatelPsrdop2.h>
@@ -275,6 +276,8 @@ namespace novatel_gps_driver
 
       // Reset Service
       reset_service_ = priv.advertiseService("freset", &NovatelGpsNodelet::resetService, this);
+      console_serivce_ = priv.advertiseService("console", &NovatelGpsNodelet::consoleService, this);
+
 
       sync_sub_ = swri::Subscriber(node, "gps_sync", 100, &NovatelGpsNodelet::SyncCallback, this);
 
@@ -344,7 +347,7 @@ namespace novatel_gps_driver
 
       if (publish_novatel_heading2_)
       {
-	novatel_heading2_pub_ = swri::advertise<novatel_gps_msgs::NovatelHeading2>(node, "heading2", 100);
+        novatel_heading2_pub_ = swri::advertise<novatel_gps_msgs::NovatelHeading2>(node, "heading2", 100);
       }
 
       if (publish_novatel_dual_antenna_heading_)
@@ -639,6 +642,7 @@ namespace novatel_gps_driver
     ros::Publisher trackstat_pub_;
 
     ros::ServiceServer reset_service_;
+    ros::ServiceServer console_serivce_;
 
     NovatelGps::ConnectionType connection_;
     NovatelGps gps_;
@@ -679,6 +683,34 @@ namespace novatel_gps_driver
 
     std::string imu_frame_id_;
     std::string frame_id_;
+
+    /**
+     * @brief Service request to reset the gps through FRESET
+     */
+    bool consoleService(novatel_gps_msgs::NovatelCONSOLE::Request& req,
+                      novatel_gps_msgs::NovatelCONSOLE::Response& res)
+    {
+
+      if (!gps_.IsConnected())
+      {
+        res.success = false;
+      }
+
+      // Formulate the reset command and send it to the device
+      std::string command;
+      command += req.message;
+      command += "\r\n";
+      res.success = gps_.Write(command);
+
+      if (req.message.length() == 0)
+      {
+        ROS_WARN("No console message entered.");
+        res.success = false;
+
+      }
+
+      return true;
+    }
 
     /**
      * @brief Service request to reset the gps through FRESET
