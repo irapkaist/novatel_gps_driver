@@ -702,6 +702,9 @@ namespace novatel_gps_driver
       command += "\r\n";
       res.success = gps_.Write(command);
 
+      NODELET_INFO("Send Console Message");
+      NODELET_INFO(command.c_str(), res.success);
+
       if (req.message.length() == 0)
       {
         ROS_WARN("No console message entered.");
@@ -709,7 +712,7 @@ namespace novatel_gps_driver
 
       }
 
-      return true;
+      return res.success;
     }
 
     /**

@@ -11,6 +11,7 @@
       publish_novatel_positions: true
       publish_novatel_velocity: true
       publish_novatel_psrdop2: true
+      publish_imu_messages: true
       frame_id: /gps
     </rosparam>
   </node>
