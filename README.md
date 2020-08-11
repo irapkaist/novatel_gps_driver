@@ -2,6 +2,44 @@ NovAtel GPS Driver
 ![CI](https://github.com/swri-robotics/novatel_gps_driver/workflows/CI/badge.svg)
 ==================
 
+# IRAP Novatel GPS Driver with RTK Mode
+
+This is ROS wrapper for Novatel GPS/GNSS Driver with RTK Usages. This driver is tested with Novatel SPAN CPT7 with built-in NTRIP client (using wireless router).
+
+## Hardware Configuration
+
+![Config](manuals/router.jpg)
+
+- This configuration is tested with LTE Router (LG U+) and DHCP ethernet connection to LAN 1 port. 
+
+
+## How to use RTK mode
+- Just run the sciprt file 
+```bash
+bash script/rtk_setup.bash
+```
+
+## How to check your connection to RTK server
+- When you check your ros message rostopic echo /invpvax
+- The position type should be RTK related code such as _NARROW_INT_ or _INS_RTKFIXED_. 
+- __Please check other messages in manuals/OEM7_Commands_Logs_Manual.pdf (page 419) for other messages__
+
+
+## ROS Service for Novatel Console
+- We implement 'NovatelCONSOLE' service for novatel console mode of the windows app.
+- You can use your message in rosservice call /novatel/console "message: {your message}'"
+
+```bash
+{Example}
+rosservice call /novatel/console "message: 'SETINSTRANSLATION ANT1 0.100 0.300 -0.150 0.03 0.03 0.03'"
+```
+
+
+## Contributor
+- Younggun Cho (yg.b.cho@gmail.com)
+
+---
+
 Overview
 --------
 
